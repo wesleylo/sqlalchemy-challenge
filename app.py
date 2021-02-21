@@ -138,7 +138,7 @@ def date_temps(start):
                     filter(Measurement.date >= start).all()
 
     date_temps = []   
-    for temp in results: 
+    for temps in results: 
         dt_dict = {}
         dt_dict["Min Temp"] = temps[1] 
         dt_dict["Avg Temp"] = temps[2]
@@ -159,7 +159,7 @@ def date_range_temps(start, end):
                     filter(Measurement.date <= end).all()
 
     date_range_temps = []   
-    for temp in results: 
+    for temps in results: 
         dt_range_dict = {}
         dt_range_dict["Min Temp"] = temps[1] 
         dt_range_dict["Avg Temp"] = temps[2]
