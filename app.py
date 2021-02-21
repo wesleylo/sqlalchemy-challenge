@@ -47,8 +47,10 @@ def welcome():
 
 @ app.route("/api/v1.0/precipitation")
 def precipitation():
+    session = Session(engine)
     # Query precipitation data
     results = session.query(Measurement.date, Measurement.prcp).all()
+    session.close()
 
     # Create a dictionary from the row data and return
 
@@ -66,10 +68,11 @@ def precipitation():
 
 @app.route("/api/v1.0/stations")  
 def stations():
-
+    session = Session(engine)
     """Return a list of all stations"""
     #Query station table 
     results = session.query(Station.station, Station.name).all()
+    session.close()
 
     stations = []
     for station, name in results: 
@@ -88,8 +91,8 @@ def stations():
 #Return a JSON list of temperature observations (TOBS) 
 #for the previous year.
 @app.route("/api/v1.0/tobs")
-def active_temps():
-
+def active_station_temps():
+    session = Session(engine)
     """Return a list of the temp observations for the most active station of the last year"""
     # Calculate the date 1 year from last data point
     query_date = session.query(Measurement.date).order_by(Measurement.date.desc()).first()
@@ -109,6 +112,7 @@ def active_temps():
                     filter(Measurement.date >= format_query_date).\
                     filter(Measurement.station == most_temps_id).\
                     order_by(Measurement.date).all()
+    session.close()
 
     temps = []
     for station, tobs in results: 
@@ -130,17 +134,18 @@ def active_temps():
 
 @app.route("/api/v1.0/<start>")
 def date_temps(start):
-
+    session = Session(engine)
     """Return a list of min, avg and max temp for a given start date"""
 
 # query tmin, tavg and tmax for all dates greater than or equal to the start date
     results = session.query(Measurement.date, func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)).\
                     filter(Measurement.date >= start).all()
+    session.close()
 
     date_temps = []   
     for temps in results: 
         dt_dict = {}
-        dt_dict["Min Temp"] = temps[1] 
+        dt_dict["Min Temp"] = temps[1] #temp[0] is date
         dt_dict["Avg Temp"] = temps[2]
         dt_dict["Max Temp"] = temps[3]   
         date_temps.append(dt_dict) 
@@ -149,8 +154,7 @@ def date_temps(start):
 
 @app.route("/api/v1.0/<start>/<end>")
 def date_range_temps(start, end):
-   
-
+    session = Session(engine)
     """Return a list of min, avg, and max temp for a user defined start and end date"""
 
 # query tmin, tavg, and tmax for dates between the start and end date
