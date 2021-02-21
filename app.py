@@ -38,8 +38,8 @@ def welcome():
         /api/v1.0/precipitation<br/>
         /api/v1.0/stations<br/>
         /api/v1.0/tobs<br/>
-        /api/v1.0/start=YYYY-MM-DD<br/>
-        /api/v1.0/start=YYYY-MM-DD/end=YYYY-MM-DD<br/>
+        /api/v1.0/YYYY-MM-DD<br/>
+        /api/v1.0/YYYY-MM-DD/YYYY-MM-DD<br/>
         """
 
 
@@ -133,12 +133,12 @@ def date_temps(start):
 
     """Return a list of min, avg and max temp for a given start date"""
 
-# calculate tmin, tavg and tmax for all dates greater than or equal to the start date
+# query tmin, tavg and tmax for all dates greater than or equal to the start date
     results = session.query(Measurement.date, func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)).\
                     filter(Measurement.date >= start).all()
 
     date_temps = []   
-    for temps in results: 
+    for temp in results: 
         dt_dict = {}
         dt_dict["Min Temp"] = temps[1] 
         dt_dict["Avg Temp"] = temps[2]
@@ -153,13 +153,13 @@ def date_range_temps(start, end):
 
     """Return a list of min, avg, and max temp for a user defined start and end date"""
 
-#calculate tmin, tavg, and tmax for dates between the start and end date
+# query tmin, tavg, and tmax for dates between the start and end date
     results = session.query(Measurement.date, func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)).\
                     filter(Measurement.date >= start).\
                     filter(Measurement.date <= end).all()
 
     date_range_temps = []   
-    for temps in results: 
+    for temp in results: 
         dt_range_dict = {}
         dt_range_dict["Min Temp"] = temps[1] 
         dt_range_dict["Avg Temp"] = temps[2]
