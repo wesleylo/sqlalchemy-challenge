@@ -155,7 +155,7 @@ def date_temps(start):
 @app.route("/api/v1.0/<start>/<end>")
 def date_range_temps(start, end):
     session = Session(engine)
-    """Return a list of min, avg, and max temp for a user defined start and end date"""
+    """Return a list of min, avg, and max temp for a given start and end date"""
 
 # query tmin, tavg, and tmax for dates between the start and end date
     results = session.query(Measurement.date, func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)).\
@@ -173,6 +173,6 @@ def date_range_temps(start, end):
     return jsonify(date_range_temps)       
 
 
-# app.run statement
+# app.run
 if __name__ == "__main__":
     app.run(debug=True)
